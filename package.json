@@ -1,0 +1,9 @@
+{
+  "name": "casa-pediatra-dashboard",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "nodemailer": "^6.9.0"
+  }
+}
