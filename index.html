@@ -927,11 +927,14 @@ async function loadLiveKPIs(){
     const {rows,ok,error}=await resp.json();
     if(!ok||!rows||!rows.length) throw new Error(error||'Sin datos');
 
-    // Reemplazar entradas de DATA_2026 para las fechas cubiertas por datos en vivo
-    const liveDates=new Set(rows.map(r=>r[2]));
+    // Solo reemplazar datos del mes actual — meses históricos cerrados se preservan del static DATA_2026
+    const now=new Date();
+    const currentKey=`${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}`;
+    const liveRows=rows.filter(r=>r[2].startsWith(currentKey));
+    const liveDates=new Set(liveRows.map(r=>r[2]));
     const keepStatic=DATA_2026.filter(r=>!liveDates.has(r[2]));
     DATA_2026.length=0;
-    DATA_2026.push(...keepStatic,...rows);
+    DATA_2026.push(...keepStatic,...liveRows);
 
     // Re-renderizar todo con datos frescos
     buildMonthNav();
